@@ -16,7 +16,7 @@ const SearchBooks = () => {
     return () => saveBookIds(savedBookIds);
   }, [savedBookIds]);
 
-  const [saveBookMutation] = useMutation(SAVE_BOOK); // Hook for saveBook mutation
+  const [saveBookMutation, { error }] = useMutation(SAVE_BOOK); // Hook for saveBook mutation
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -35,8 +35,8 @@ const SearchBooks = () => {
       const bookData = items.map((book) => ({
         bookId: book.id,
         authors: book.volumeInfo.authors || ["No author to display"],
-        title: book.volumeInfo.title,
-        description: book.volumeInfo.description,
+        title: book.volumeInfo.title || "",
+        description: book.volumeInfo.description || "",
         image: book.volumeInfo.imageLinks?.thumbnail || "",
       }));
 
@@ -50,14 +50,14 @@ const SearchBooks = () => {
   const handleSaveBook = async (bookId) => {
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-
+    console.log(token)
     if (!token) {
       return false;
     }
 
     try {
       const { data } = await saveBookMutation({
-        variables: { input: bookToSave },
+        variables: { ...bookToSave },
       });
 
       console.log(data);

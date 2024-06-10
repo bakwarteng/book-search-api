@@ -34,6 +34,7 @@ const SignupForm = () => {
     if (form.checkValidity() === false) {
       event.stopPropagation();
       setValidated(true);
+      console.log(validated)
       return;
     }
 
